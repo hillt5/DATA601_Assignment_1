@@ -1,0 +1,54 @@
+---
+title: "Classic Rock"
+output: github_document
+---
+
+
+
+Introduction
+
+Classic rock is a genre of music that was originally driven by radio station plays in the late 20th century, that draws heavily upon rock artists of the 1960's and 1970's. Unlike many radio stations, classic rock stations avoid playing new artists and instead rely on a wide range of artists with common roots in popular blues guitar-influenced American and British music. 
+
+Overview
+
+In July 2014, FiveThirtyEight ventured to see which contemporary artist - from the 1990's and on - are the first to be considered 'classic' for their time, as well as measure any regional differences based on the radio station. This is based on a survey of 25 classic rock radio stations one week in June 2014. the original article sought to demonstrate that this genre encompasses more and more newer artists and there is no static definition for which artists can be considered classic rock. It also looked at some regional differences based on the location of the radio stations.
+
+
+Original Data Set
+
+
+For my initial purposes, I'll be using the song list .csv which does not provide location data. Instead it provides the folliwng elements: the song lists' raw data contains "clean" artist and song names - which corrects for small diffences in characters and ambiguous song names. It also contains year of release, a column combining the song and artist, a column 'first' that contains the value '1', 'Year' which specifies whether there's a release year available, 'Playcount', which is the total number of plays collected from all classic rock stations.
+
+```{r setup, include=FALSE}
+Classic_rock_orig <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/classic-rock/classic-rock-song-list.csv")
+Classic_rock <- as.data.frame(Classic_rock_orig)
+head(Classic_rock)
+
+```
+
+
+Removing any Unnecessary Columns
+
+From the raw data, I removed all columns except the song and artist name, year of release, and play count.
+
+```{r setup, include=FALSE}
+Classic_rock_subset <- Classic_rock[ -c(4,5,6,8)]
+colnames(Classic_rock_subset) <- c("Song", "Artist", "Release Year", "Play Count")
+summary(Classic_rock_subset)
+```
+
+Fixing an Obvious Error
+
+I noticed that there was one entry with release year 1071
+```{r setup, include=FALSE}
+Too_Oldies <- subset(Classic_rock_subset, Classic_rock_subset$`Release Year` == 1071)
+print(Too_Oldies)
+```
+
+It looks like it this was a typo, which I corrected.
+```{r setup, include=FALSE}
+Classic_rock_subset[548,3] = "1971"
+```
+
+Conclusions
+From these observations, I hope to confirm FiveThirtyEight's findings, as well as suggest my own trends based on frequency of song and artist. In particular, I'm interested in identifying the most popular songs and using this to suggest the artists most regarded as classic rock artists. I'm also interested in the artists with identifying the most pervasive artists - those with the highest number of songs and also the most consistent record of creating rock titles - based on the span of release years. Finally, I may also upgrade to the original data set with location information as there may be important regional effects on artists and perhaps identify some areas with are the most genre-bending.
